@@ -1,12 +1,16 @@
 import { Button, Container, Grid, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import useAuth from '../../Hooks/useAuth';
 import login from '../../images/login.png';
 
 const Login = () => {
     const [loginData, setLoginData] = useState({});
-    const { user, handleSignIn, isLoading , error} = useAuth();
+    const { user, handleSignIn, isLoading, error } = useAuth();
+
+    const location = useLocation();
+    const history = useHistory();
+
     const handleChange = (e) => {
         const filled = e.target.name;
         const value = e.target.value;
@@ -17,7 +21,7 @@ const Login = () => {
     }
     // login submit---------------------------
     const handleLoginSubmit = (e) => {
-        handleSignIn(loginData.email , loginData.password);
+        handleSignIn(loginData.email, loginData.password , location , history);
         e.preventDefault();
     }
     return (
