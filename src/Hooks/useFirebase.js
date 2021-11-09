@@ -1,38 +1,60 @@
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useEffect, useState } from "react";
 import firebaseInitialize from "../Pages/Firebase/firebaseInit";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 firebaseInitialize();
 
 const useFirebase = () => {
     const [user, setUser] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState('');
     const auth = getAuth();
 
 
     // register a user -----------------------------------------------------------
-    const handleRegister = () => {
+    const handleRegister = (email , password) => {
+        setIsLoading(true);
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
-                // ...
+                setError('');
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                // ..
-            });
+               setError(errorMessage);
+            })
+
+            .finally( () => setIsLoading(false));
+            
     };
 
-    // tract uses (when login set user info)------------------------
-    useEffectL(() => {
-        const auth = getAuth();
-        onAuthStateChanged(auth, (user) => {
+    //handle sign in-----------------------------------------------------------
+    const handleSignIn = (email , password ) => {
+        setIsLoading(true);
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                setError('');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                setError(errorMessage);
+            })
+
+            .finally( () => setIsLoading(false))
+    }
+
+    // obsserver user state tract uses (when login set user info)------------------------
+    useEffect(() => {
+        const unsubscribed = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user);
             } else {
                 setUser({})
             }
-        });
+            setIsLoading(false);
+        })
+        
+        return () => unsubscribed;
     }, []);
 
     // Logout user------------------------------------------------
@@ -41,13 +63,17 @@ const useFirebase = () => {
             .then(() => {
                 setUser({})
             }).catch((error) => {
-                // An error happened.
-            });
+                setError(error.message)
+            })
+            .finally( () => setIsLoading(false))
     }
     return {
         user,
         handleRegister,
-        handleSignOut
+        handleSignOut,
+        handleSignIn,
+        isLoading,
+        error
     }
 }
 export default useFirebase;
