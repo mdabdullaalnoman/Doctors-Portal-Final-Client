@@ -33,6 +33,11 @@ const Navigation = () => {
                             !user.email && <Button color="inherit">Login</Button>
                         }
                     </Link>
+                    <Link to="/dashboard">
+                        {
+                            user.email && <Button color="inherit">Dashboard</Button>
+                        }
+                    </Link>
                     {user.email && <Button onClick={handleSignOut} color="inherit">Logout</Button>}
                 </Toolbar>
             </AppBar>
