@@ -6,7 +6,7 @@ import login from '../../images/login.png';
 
 const Login = () => {
     const [loginData, setLoginData] = useState({});
-    const { user, handleSignIn, isLoading, error } = useAuth();
+    const { user, handleSignIn, isLoading, error, handleGoogleSignIn } = useAuth();
 
     const location = useLocation();
     const history = useHistory();
@@ -21,8 +21,13 @@ const Login = () => {
     }
     // login submit---------------------------
     const handleLoginSubmit = (e) => {
-        handleSignIn(loginData.email, loginData.password , location , history);
+        handleSignIn(loginData.email, loginData.password, location, history);
         e.preventDefault();
+    }
+
+    // handle google sing in-------------------------------------
+    const handleGoogleLogin = () => {
+        handleGoogleSignIn(location, history);
     }
     return (
         <Container>
@@ -57,14 +62,21 @@ const Login = () => {
                         </Button>
 
                     </form>
+
+                    {user.email && <p> user login successfully</p>}
+                    <p>{error}</p>
+                    <p>--------------------------------------</p>
+                    <Button onClick={handleGoogleLogin}>
+                        google signIn
+                    </Button>
+                    
                 </Grid>
-                {user.email && <p> user login successfully</p>}
-                <p>{error}</p>
+
                 <Grid item xs={12} md={6}>
                     <img style={{ width: '100%', height: '100vh' }} src={login} alt="" />
                 </Grid>
-
             </Grid>
+
         </Container>
     );
 };

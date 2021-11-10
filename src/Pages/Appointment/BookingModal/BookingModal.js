@@ -1,11 +1,12 @@
-import React from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Fade from '@mui/material/Fade';
+import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import React, { useState } from 'react';
+import useAuth from '../../../Hooks/useAuth';
 
 const style = {
     position: 'absolute',
@@ -20,13 +21,31 @@ const style = {
 };
 
 const BookingModal = ({ openBooking, handleBookingClose, booking, date }) => {
+
     const { name, time } = booking;
+    const { user } = useAuth();
+
+    const patentInformation = { patentName: user.displayName, patentEmail: user.email, patentPhone: '' };
+    const [patentInfo, setPatentInfo] = useState(patentInformation);
+    console.log(patentInfo);
+    // patent info update ---------------------------------
+    const patentInfoUpdate = (e) => {
+        const value = e.target.value;
+        const filled = e.target.filled;
+        const newPatent = { ...patentInfo };
+        newPatent[filled] = value;
+        setPatentInfo(newPatent);
+    }
 
     const handleBookingSubmit = e => {
-        alert('submitting');
-
-        // collect data
-        // send to the server
+        // colected data 
+        const appointment = {
+            ...patentInfo,
+            time,
+            serviceName: name,
+            date: date.toLocaleDateString()
+        }
+        console.log(appointment);
 
         handleBookingClose();
         e.preventDefault();
@@ -60,20 +79,26 @@ const BookingModal = ({ openBooking, handleBookingClose, booking, date }) => {
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
-                            defaultValue="Your Name"
+                            defaultValue={user?.displayName}
                             size="small"
+                            name="patentName"
+                            onChange={patentInfoUpdate}
                         />
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
-                            defaultValue="Your Email"
+                            defaultValue={user?.email}
                             size="small"
+                            name="patentEmail"
+                            onChange={patentInfoUpdate}
                         />
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
                             defaultValue="Phone Number"
                             size="small"
+                            name="patentPhone"
+                            onChange={patentInfoUpdate}
                         />
                         <TextField
                             disabled

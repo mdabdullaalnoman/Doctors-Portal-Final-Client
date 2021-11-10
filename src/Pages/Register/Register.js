@@ -1,12 +1,13 @@
 import { Button, Container, Grid, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import useAuth from '../../Hooks/useAuth';
 import login from '../../images/login.png';
 
 const Register = () => {
     const [loginData, setLoginData] = useState({});
-    const { user, handleRegister, isLoading , error} = useAuth();
+    const { user, handleRegister, isLoading, error } = useAuth();
+    const history = useHistory();
     console.log(user);
 
 
@@ -25,7 +26,7 @@ const Register = () => {
             return;
         }
 
-        handleRegister(loginData.email, loginData.password);
+        handleRegister(loginData.email, loginData.password, loginData.name, history);
         alert('submited')
         e.preventDefault();
     }
@@ -38,6 +39,14 @@ const Register = () => {
                     </Typography>
                     {!isLoading &&
                         <form onSubmit={handleLoginSubmit}>
+                            <TextField
+                                sx={{ width: '75%', m: 1 }}
+                                name="name"
+                                onChange={handleChange}
+                                id="filled-basic"
+                                label="name"
+                                type="text"
+                                variant="filled" />
                             <TextField
                                 sx={{ width: '75%', m: 1 }}
                                 name="email"
@@ -73,7 +82,7 @@ const Register = () => {
                         </form>
                     }
                     {isLoading && <h1>Loading</h1>}
-                    {user.email && <p>user created succcesfully</p> }
+                    {user.email && <p>user created succcesfully</p>}
                     <p>{error}</p>
                 </Grid>
                 <Grid item xs={12} md={6}>

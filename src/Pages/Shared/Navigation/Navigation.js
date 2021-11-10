@@ -29,16 +29,11 @@ const Navigation = () => {
                     </Typography>
                     <Link to="/appointment"><Button color="inherit">Appointment</Button></Link>
                     <Link to="/login">
-
                         {
-                            user.email
-                                ?
-                                <Button onClick={handleSignOut} color="inherit">Logout</Button>
-                                :
-                                <Button  color="inherit">Login</Button>
+                            !user.email && <Button color="inherit">Login</Button>
                         }
                     </Link>
-                    {/* {user.email && <Button color="inherit">Logout</Button>} */}
+                    {user.email && <Button onClick={handleSignOut} color="inherit">Logout</Button>}
                 </Toolbar>
             </AppBar>
         </Box>
